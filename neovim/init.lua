@@ -525,7 +525,7 @@ require("nvim-tree").setup({
       },
     },
   },
-  -- 	git = {
-  -- 		ignore = false,
-  -- 	},
+  --    git = {
+  --            ignore = false,
+  --    },
 })
