@@ -1,1 +1,13 @@
 alias ll="ls -laFGh"
+alias bat="batcat"
+alias ai="ansible-inventory --graph --vars"
+alias ap="ansible-playbook"
+alias cimg="~/bin/cimg"
+export EDITOR=/usr/local/bin/nvim
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH=$BUN_INSTALL/bin:$PATH
+
+# BREW
+export PATH=/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin:$PATH
