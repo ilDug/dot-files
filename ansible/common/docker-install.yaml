@@ -1,0 +1,86 @@
+#  last version: 2024-09-30
+---
+- name: install docker engine
+  hosts: xxx
+
+  tasks:
+      - name: remove old pakages
+        shell: |
+            apt-get remove docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc
+        ignore_errors: true
+
+      - name: update & upgrade
+        apt:
+            update_cache: true
+            upgrade: full
+
+      - name: Install ca-certificates
+        apt:
+            name: ca-certificates
+            state: present
+
+      - name: Install curl
+        apt:
+            name: curl
+            state: present
+
+      - name: Install gnupg
+        apt:
+            name: gnupg
+            state: present
+
+      - name: Install lsb-release
+        apt:
+            name: lsb-release
+            state: present
+
+      - name: Add Docker official GPG key
+        shell: |
+            mkdir -p /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+            chmod a+r /etc/apt/keyrings/docker.asc
+
+      - name: Add the repository to Apt sources
+        shell: |
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" |  tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+      - name: update & upgrade
+        apt:
+            update_cache: true
+            upgrade: safe
+
+      - name: Install docker-ce
+        apt:
+            name: docker-ce
+            state: present
+
+      - name: Install docker-ce-cli
+        apt:
+            name: docker-ce-cli
+            state: present
+
+      - name: Install containerd.io
+        apt:
+            name: containerd.io
+            state: present
+
+      - name: Install docker-compose-plugin
+        apt:
+            name: docker-compose-plugin
+            state: present
+
+      - name: Install docker-buildx-plugin
+        apt:
+            name: docker-buildx-plugin
+            state: present
+
+      - name: enable services
+        shell: |
+            systemctl enable docker.service
+            systemctl enable containerd.service
+
+      - name: version
+        shell: docker -v
+        register: status
+      - debug:
+            msg: "{{ status.stdout_lines }}"
