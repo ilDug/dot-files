@@ -1,0 +1,29 @@
+- name: configurazione iniziale di BIND9
+  hosts: dns
+  become: yes
+
+  tasks:
+
+      - name: update packages
+        apt:
+            update_cache: yes
+
+      - name: installa bind9
+        apt:
+            name: bind9
+            state: present
+
+      - name: copia la cartella delle configurazioni
+        copy:
+            src: ../bind
+            dest: /etc/bind
+
+      - name: riavvia bind9
+        shell: |
+            systemctl restart bind9
+            systemctl status bind9
+        register: bind9_status
+
+      - name: controlla lo stato di bind9
+        debug:
+            var: bind9_status.stdout_lines

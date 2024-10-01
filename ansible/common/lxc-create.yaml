@@ -75,8 +75,6 @@
       - name: install packages
         shell: |
             pct exec {{ ctid }} -- bash -c "apt-get install -y \
-            python3 \
-            python3-pip \
             cifs-utils \
             software-properties-common \
             apt-transport-https \

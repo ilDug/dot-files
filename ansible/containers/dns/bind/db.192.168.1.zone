@@ -1,0 +1,37 @@
+;
+; BIND reverse data file for local loopback interface
+;
+$TTL	604800
+@	IN	SOA	ns.eurokemical.lan. mdognini.eurokemical.it. (
+			        32          ; Serial
+			        604800      ; Refresh
+			        86400       ; Retry
+			        2419200     ; Expire
+			        604800 )    ; Negative Cache TTL
+;
+@       IN      NS      localhost.
+1.0.0   IN      PTR     localhost.
+@       IN      NS      ns.eurokemical.lan.
+91      IN      PTR     backup.eurokemical.lan.
+160     IN      PTR     hyp1.eurokemical.lan.
+163     IN      PTR     app.eurokemical.lan.
+167     IN      PTR     as.eurokemical.lan.
+169     IN      PTR     api2.eurokemical.lan.
+171     IN      PTR     hyp2.eurokemical.lan.
+172     IN      PTR     hyp3.eurokemical.lan.
+173     IN      PTR     srv3.eurokemical.lan.
+174     IN      PTR     sk10.eurokemical.lan.
+175     IN      PTR     sk20.eurokemical.lan.
+176     IN      PTR     api5.eurokemical.lan.
+177     IN      PTR     dc1.eurokemical.lan.
+178     IN      PTR     docker1.eurokemical.lan.
+179     IN      PTR     imp11.eurokemical.lan.
+180     IN      PTR     dbprod1.eurokemical.lan.
+181     IN      PTR     nasprod1.eurokemical.lan.
+191     IN      PTR     docker2.eurokemical.lan.
+192     IN      PTR     docker3.eurokemical.lan.
+193     IN      PTR     lb1.ek.
+211     IN      PTR     mongo1.eurokemical.lan.
+212     IN      PTR     mongo2.eurokemical.lan.
+213     IN      PTR     mongo3.eurokemical.lan.
+241     IN      PTR     phone-ut.eurokemical.lan.

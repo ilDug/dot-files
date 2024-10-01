@@ -1,0 +1,20 @@
+- name: Configura BIND9 DNS server
+  hosts: dns
+  become: yes
+
+  tasks:
+      - name: sync config folder
+        synchronize:
+            src: ../bind
+            dest: /etc/bind
+            recursive: yes
+
+      - name: restart bind9
+        shell: |
+            systemctl restart bind9
+            systemctl status bind9
+        register: bind9_status
+
+      - name: check bind9 status
+        debug:
+            var: bind9_status.stdout_lines

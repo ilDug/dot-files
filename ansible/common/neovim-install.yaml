@@ -1,3 +1,4 @@
+# last version 2024-09-30
 - name: install neovim
   hosts: xxx
 
@@ -22,10 +23,6 @@
             echo 'export PATH=$PATH:/opt/nvim-linux64/bin' >> ~/.bashrc 
             source ~/.bashrc 
             rm nvim-linux64.tar.gz 
-        register: nvim
-
-      - debug:
-            var: nvim.stdout_lines
 
       - name: install LazyVim
         shell: |

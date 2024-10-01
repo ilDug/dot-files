@@ -1,0 +1,54 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@    IN    SOA    ns.eurokemical.lan. mdognini.eurokemical.it. (
+        			     32       ; Serial
+			             604800   ; Refresh
+			             86400    ; Retry
+			             2419200  ; Expire
+			             604800 ) ; Negative Cache TTL
+;
+@       IN     NS     ns.eurokemical.lan.
+@       IN     A      127.0.0.1
+@       IN     AAAA   ::1
+
+
+;DNS record 
+backup    IN     A      192.168.1.91
+nas1      IN     A      192.168.1.100
+hyp1      IN     A      192.168.1.160
+ns        IN     A      192.168.1.161 
+app       IN     A      192.168.1.163
+as        IN     A      192.168.1.167
+api2      IN     A      192.168.1.169
+hyp2      IN     A      192.168.1.171
+hyp3      IN     A      192.168.1.172
+srv3      IN     A      192.168.1.173
+sk10      IN     A      192.168.1.174
+sk20      IN     A      192.168.1.175
+api5      IN     A      192.168.1.176
+docker1   IN     A      192.168.1.178
+imp11     IN     A      192.168.1.179
+dbprod1   IN     A      192.168.1.180
+nasprod1  IN     A      192.168.1.181
+docker2   IN     A      192.168.1.191
+docker3   IN     A      192.168.1.192
+; lb1       IN     A      192.168.1.193
+mongo1    IN     A      192.168.1.211
+mongo2    IN     A      192.168.1.212
+mongo3    IN     A      192.168.1.213
+phone-ut  IN     A      192.168.1.241
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;PROXY
+dev     IN   CNAME docker3
+*       IN   CNAME docker2
+       
+
+;DOCKERS
+api6    IN   CNAME docker1
+app3    IN   CNAME docker1
+gitlab  IN   CNAME docker1
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

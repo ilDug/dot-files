@@ -1,0 +1,37 @@
+;
+; BIND data file for local loopback interface
+;
+$TTL    604800
+@    IN    SOA    ns.ek.lan. root.mail.ek.lan (
+                        5       ; Serial
+                        604800   ; Refresh
+                        86400    ; Retry
+                        2419200  ; Expire
+                        604800 ) ; Negative Cache TTL
+;
+@       IN     NS     ns.ek.
+@       IN     A      127.0.0.1
+@       IN     AAAA   ::1
+
+
+;DNS record 
+nas1            IN  A   192.168.1.100
+ns              IN  A   192.168.1.161 
+hyp1            IN  A   192.168.1.160
+hyp2            IN  A   192.168.1.171
+hyp3            IN  A   192.168.1.172
+proxy           IN  A   192.168.1.193
+
+; mongo1.db     IN    A  192.168.1.211
+; mongo2.db     IN    A  192.168.1.212
+; mongo3.db     IN    A  192.168.1.213
+
+dk1            IN  A   192.168.1.194
+dk2            IN  A   192.168.1.195
+dk3            IN  A   192.168.1.196
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; LOADBALANCER / PROXY
+*       IN   CNAME proxy
+       
+
