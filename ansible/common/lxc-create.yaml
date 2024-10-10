@@ -1,9 +1,9 @@
-# last version: 2024-09-30
+# last version: 2024-10-10
 ---
 - name: Create LXC container
   hosts: hyp
   vers:
-      ctid: 900
+      ctid: 100
 
   tasks:
       - name: create lxc container on PROXMOX
@@ -20,10 +20,10 @@
               --net0 {{ net0 }} \
               --nameserver {{ nameserver }} \
               --searchdomain {{ searchdomain }} \
-              --features {{ features }} \
+              --features "{{ features }}" \
               --onboot {{ onboot }} \
               --unprivileged {{ unprivileged }} \
-              -- memory {{ memory }} \
+              --memory {{ memory }} \
         vars:
             hostname: name
             password: password
@@ -39,19 +39,17 @@
             cores: 4
             gateway: 192.168.1.1
             nameserver: 192.168.1.161,8.8.8.8,1.1.1.1
-            searchdomain: ek
+            searchdomain: ek.lan
             net0: "name=eth0,bridge=vmbr0,gw={{ gateway }},ip={{ ipv4 }},firewall=1"
-            features: nesting=1,fuse=1
+            features: nesting=1,fuse=1,cifs=1
             onboot: 1
             unprivileged: 1
 
       - name: set mountpoints
         shell: |
-            pct set {{ ctid }} {{ mp_number }} {{ host_path }},mp={{ container_path }},shared=1,replicate=0
-        vars:
-            mp_number: -mp0
-            host_path: /mnt/nas1/sysadmin/docker
-            container_path: /docker
+            pct set {{ ctid }} {{ item.mp_number }} {{ item.host_path }},mp={{ item.container_path }},shared=1,replicate=0
+        loop:
+            - { mp_number: -mp0, host_path: /mnt/folder, container_path: /folder }
 
       - name: set memory
         shell: |
@@ -72,21 +70,22 @@
         shell: |
             pct exec {{ ctid }} -- bash -c "apt-get update && apt-get upgrade -y"
 
-      - name: install packages
+      - name: "install packages: {{ item }}"
         shell: |
-            pct exec {{ ctid }} -- bash -c "apt-get install -y \
-            cifs-utils \
-            software-properties-common \
-            apt-transport-https \
-            ca-certificates \
-            curl \
-            gnupg \
-            lsb-release \
-            net-tools \
-            bat \
-            htop \
-            gzip \
-            ;"
+            pct exec {{ ctid }} -- bash -c "apt-get install -y {{ item }}"
+        loop:
+            - cifs-utils
+            - software-properties-common
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - gnupg
+            - lsb-release
+            - net-tools
+            - bat
+            - htop
+            - gzip
+            - git
 
       - debug:
             msg: "ricordarsi di copiare la chiave ssh per l'accesso di ansible al container e di aggiornare l'inventory"

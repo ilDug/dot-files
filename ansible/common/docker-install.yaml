@@ -1,4 +1,4 @@
-#  last version: 2024-09-30
+#  last version: 2024-10-10
 ---
 - name: install docker engine
   hosts: xxx
@@ -14,25 +14,16 @@
             update_cache: true
             upgrade: full
 
-      - name: Install ca-certificates
+      - name: "install package {{ item }}"
         apt:
-            name: ca-certificates
+            name: "{{ item }}"
             state: present
-
-      - name: Install curl
-        apt:
-            name: curl
-            state: present
-
-      - name: Install gnupg
-        apt:
-            name: gnupg
-            state: present
-
-      - name: Install lsb-release
-        apt:
-            name: lsb-release
-            state: present
+        loop:
+            - apt-transport-https
+            - ca-certificates
+            - curl
+            - gnupg
+            - lsb-release
 
       - name: Add Docker official GPG key
         shell: |
@@ -49,30 +40,16 @@
             update_cache: true
             upgrade: safe
 
-      - name: Install docker-ce
+      - name: Install docker {{ item }} 
         apt:
-            name: docker-ce
+            name: "{{ item }}"
             state: present
-
-      - name: Install docker-ce-cli
-        apt:
-            name: docker-ce-cli
-            state: present
-
-      - name: Install containerd.io
-        apt:
-            name: containerd.io
-            state: present
-
-      - name: Install docker-compose-plugin
-        apt:
-            name: docker-compose-plugin
-            state: present
-
-      - name: Install docker-buildx-plugin
-        apt:
-            name: docker-buildx-plugin
-            state: present
+        loop:
+            - docker-ce
+            - docker-ce-cli
+            - containerd.io
+            - docker-compose-plugin
+            - docker-buildx-plugin
 
       - name: enable services
         shell: |
