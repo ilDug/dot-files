@@ -1,0 +1,23 @@
+# last version: 2024-10-04
+---
+- name: add samba uer to nas
+  hosts: nas
+  remote_user: root
+
+  vars:
+      user: dag
+      pw: adsadsdagnas
+
+  tasks:
+      - name: create samba user
+        shell: |
+            useradd -r -s /bin/bash "{{ user }}"
+
+      - name: chamge user password
+        shell: |
+            echo "{{ user }}:{{ pw }}" | chpasswd
+
+      - name: create samba user
+        shell: |
+            (echo "{{ pw }}"; echo "{{ pw }}") | smbpasswd -s -a "{{ user }}"
+            smbpasswd -e "{{ user }}"

@@ -1,0 +1,101 @@
+# last version: 2024-10-04
+---
+- name: Create LXC container
+  hosts: hyp
+  vars:
+      ctid: 102
+
+  tasks:
+      - name: create lxc container on PROXMOX
+        shell: |
+            pct create {{ ctid }} {{ template }} \
+              --arch {{ arch }} \
+              --ostype {{ ostype }} \
+              --storage {{ storage }} \
+              --hostname {{ hostname }} \
+              --password {{ password }} \
+              --cores {{ cores }}  \
+              --swap {{ swap }} \
+              --rootfs {{ rootfs }} \
+              --net0 {{ net0 }} \
+              --nameserver {{ nameserver }} \
+              --searchdomain {{ searchdomain }} \
+              --features "{{ features }}" \
+              --onboot {{ onboot }} \
+              --unprivileged {{ unprivileged }} \
+              --memory {{ memory }} \
+        vars:
+            hostname: nas
+            password: adsadsdagnas
+            ipv4: 10.0.10.20/16
+            memory: 1024
+            swap: 0
+            template: /var/lib/vz/template/cache/ubuntu-22.04-standard_22.04-1_amd64.tar.zst
+            storage: local-lvm
+            disk_size: 8 # gigabyte
+            rootfs: "{{ storage }}:{{ disk_size }}"
+            arch: amd64
+            ostype: ubuntu
+            cores: 4
+            gateway: 10.0.0.1
+            nameserver: 10.0.10.10,8.8.8.8,1.1.1.1
+            searchdomain: dag.lan
+            net0: "name=eth0,bridge=vmbr0,gw={{ gateway }},ip={{ ipv4 }},firewall=1"
+            features: "nesting=1,fuse=1,mount=nfs;cifs"
+            onboot: 1
+            unprivileged: 1
+
+      - name: set mountpoints
+        shell: |
+            pct set {{ ctid }} {{ item.mp_number }} {{ item.host_path }},mp={{ item.container_path }},shared=1,replicate=0
+        loop:
+            - { mp_number: -mp0, host_path: /dag-pool/archive, container_path: /exports/archive }
+            - { mp_number: -mp1, host_path: /dag-pool/proxmox, container_path: /exports/proxmox }
+            - { mp_number: -mp2, host_path: /dag-pool/torrent, container_path: /exports/torrent }
+            - { mp_number: -mp3, host_path: /dag-pool/dug, container_path: /exports/dug }
+
+      - name: set memory
+        shell: |
+            pct set {{ ctid }} -memory {{ memory }}
+        vars:
+            memory: 1024
+
+      - name: set tags
+        shell: |
+            pct set {{ ctid }} -tags "{{ item }}"
+        vars:
+            - tags: nas;samba
+
+      - name: Start LXC container
+        shell: pct start {{ ctid }}
+
+      - name: common settings
+        shell: |
+            pct exec {{ ctid }} -- bash -c "timedatectl set-timezone Europe/Rome"
+            pct exec {{ ctid }} -- bash -c "sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config"
+            pct exec {{ ctid }} -- bash -c "systemctl restart ssh.service"
+            pct exec {{ ctid }} -- bash -c 'locale-gen "en_US.UTF-8"'
+            pct exec {{ ctid }} -- bash -c 'update-locale LANG=en_US.UTF-8'
+
+      - name: update and upgrade
+        shell: |
+            pct exec {{ ctid }} -- bash -c "apt-get update && apt-get upgrade -y"
+
+      - name: install packages
+        shell: |
+            pct exec {{ ctid }} -- bash -c "apt-get install -y \
+            cifs-utils \
+            software-properties-common \
+            apt-transport-https \
+            ca-certificates \
+            curl \
+            gnupg \
+            lsb-release \
+            net-tools \
+            bat \
+            htop \
+            gzip \
+            ;"
+
+      - debug:
+            msg: "ricordarsi di copiare la chiave ssh per l'accesso di ansible al container e di aggiornare l'inventory"

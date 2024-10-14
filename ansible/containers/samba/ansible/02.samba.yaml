@@ -1,0 +1,29 @@
+# last version: 2024-10-04
+---
+- name: install samba and update configurations
+  hosts: nas
+  remote_user: root
+
+  tasks:
+      - name: install samba
+        ansible.builtin.apt:
+            pkg:
+                - samba
+                - samba-common
+                - samba-client
+                - cifs-utils
+            state: present
+
+      - name: copy configurations
+        ansible.builtin.copy:
+            src: ../smb.conf
+            dest: /etc/samba/smb.conf
+
+      - name: restart SMBD
+        ansible.builtin.shell: |
+            systemctl restart smbd.service
+            systemctl status smbd.service
+        register: status
+
+      - debug:
+            msg: "{{ status.stdout_lines }}"
