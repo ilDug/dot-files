@@ -2,7 +2,7 @@
 ---
 - name: Create LXC container
   hosts: hyp
-  vers:
+  vars:
       ctid: 900
 
   tasks:
