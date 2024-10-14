@@ -57,6 +57,12 @@
         shell: |
             pct set {{ ctid }} -memory {{ memory }}
 
+      - name: set tags
+        shell: |
+            pct set {{ ctid }} -tags "{{ item }}"
+        vars:
+            - tags: nas;samba
+
       - name: Start LXC container
         shell: pct start {{ ctid }}
 
